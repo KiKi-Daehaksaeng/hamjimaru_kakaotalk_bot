@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #!/usr/bin/env python3
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from selenium import webdriver
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -25,10 +27,11 @@ def remove_residue(string):
 		removed += string[i]
 	return removed
 
+print("first command")
 
 # chromedriver 경로설정
-chromedriver = './chromedriver'
-driver = webdriver.Chrome(chromedriver, options=chrome_options)
+chromedriver = Service('./chromedriver')
+driver = webdriver.Chrome(service=chromedriver, options=chrome_options)
 def job():
 	driver.implicitly_wait(1)
 	driver.get('https://www.kw.ac.kr/ko/life/facility11.jsp')  # 스크래핑할 url 입력
@@ -46,22 +49,22 @@ def job():
 		thu=th[4].text
 		fri=th[5].text
 
-	#print("first command")
-	#print('월:{0}, 화:{1}, 수:{2}, 목:{3}, 금:{4}'.format(mon,tue,wed,thu,fri))
+		#print("first command")
+		#print('월:{0}, 화:{1}, 수:{2}, 목:{3}, 금:{4}'.format(mon,tue,wed,thu,fri))
 		diet1 =[mon, tue, wed, thu, fri]
 		m1={mon,tue,wed,thu,fri}    
 		
 	for tr in tbody:
 		td= tr.find_elements_by_tag_name("td")
-		mon = remove_residue(td[1].text)
-		tue = remove_residue(td[2].text)
-		wed = remove_residue(td[3].text)
-		thu = remove_residue(td[4].text)
-		fri = remove_residue(td[5].text)
+		mon=td[1].text
+		tue=td[2].text
+		wed=td[3].text
+		thu=td[4].text
+		fri=td[5].text
 
 
-	#print("second command")
-	#print('월:{0}, 화:{1}, 수:{2}, 목:{3}, 금:{4}'.format(mon,tue,wed,thu,fri))
+		#print("second command")
+		#print('월:{0}, 화:{1}, 수:{2}, 목:{3}, 금:{4}'.format(mon,tue,wed,thu,fri))
 		diet2 =[mon, tue, wed, thu, fri]
 
 	data= [diet1,diet2]
@@ -74,9 +77,5 @@ def job():
 		f.write("["+now+"] "+"update the diet!\n")
 		f.close()
 
-schedule.every(3).hours.do(job);
-
-while True:
-	schedule.run_pending()
-	time.sleep(1)
+job()
 driver.close()
